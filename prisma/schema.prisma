@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SchedulingPage {
+  id                String    @id @default(cuid())
+  title             String
+  description       String?
+  organizerName     String
+  organizerEmail    String
+  durationMinutes   Int
+  meetingUrl        String?
+  icsUrl            String
+  availableFrom     DateTime
+  availableTo       DateTime
+  workingHoursStart Int       @default(9)
+  workingHoursEnd   Int       @default(18)
+  timezone          String    @default("Asia/Tokyo")
+  manageToken       String    @unique @default(cuid())
+  createdAt         DateTime  @default(now())
+  bookings          Booking[]
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  schedulingPageId String
+  schedulingPage   SchedulingPage @relation(fields: [schedulingPageId], references: [id], onDelete: Cascade)
+  attendeeName     String
+  attendeeEmail    String
+  startTime        DateTime
+  endTime          DateTime
+  status           BookingStatus  @default(CONFIRMED)
+  createdAt        DateTime       @default(now())
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
