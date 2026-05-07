@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import StepIcsUrl from "./StepIcsUpload";
 import StepMeetingDetails from "./StepMeetingDetails";
-import StepAvailability from "./StepAvailability";
+import StepAvailability, { DEFAULT_WEEKLY_SCHEDULE } from "./StepAvailability";
 
 const STEPS = ["ICS URL", "ミーティング詳細", "受付期間"] as const;
 
@@ -29,6 +29,7 @@ export default function CreatePageForm() {
     availableTo: "",
     workingHoursStart: 9,
     workingHoursEnd: 18,
+    weeklySchedule: DEFAULT_WEEKLY_SCHEDULE,
   });
 
   const canProceed = () => {
