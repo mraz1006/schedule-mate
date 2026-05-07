@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
       workingHoursEnd,
       timezone,
       weeklySchedule,
+      bufferBefore,
+      bufferAfter,
     } = body;
 
     if (!title || !organizerName || !organizerEmail || !icsUrl || !availableFrom || !availableTo) {
@@ -57,6 +59,8 @@ export async function POST(req: NextRequest) {
         weeklySchedule: weeklySchedule !== undefined
           ? (weeklySchedule as Prisma.InputJsonValue)
           : Prisma.JsonNull,
+        bufferBefore: bufferBefore ?? 0,
+        bufferAfter: bufferAfter ?? 0,
       },
     });
 

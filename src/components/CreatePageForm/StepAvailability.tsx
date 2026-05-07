@@ -8,6 +8,8 @@ type AvailabilityConfig = {
   workingHoursStart: number;
   workingHoursEnd: number;
   weeklySchedule: DaySchedule[];
+  bufferBefore: number;
+  bufferAfter: number;
 };
 
 type Props = {
@@ -16,6 +18,7 @@ type Props = {
 };
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const BUFFER_OPTIONS = [0, 5, 10, 15, 30];
 
 const DAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
 // Mon-Sun order for Japanese business context (Mon first)
@@ -77,6 +80,37 @@ export default function StepAvailability({ values, onChange }: Props) {
           />
         </div>
       </div>
+
+      {/* Buffer time */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">前バッファ</label>
+          <select
+            value={values.bufferBefore}
+            onChange={(e) => onChange({ ...values, bufferBefore: Number(e.target.value) })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            {BUFFER_OPTIONS.map((m) => (
+              <option key={m} value={m}>{m === 0 ? "なし" : `${m}分`}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">後バッファ</label>
+          <select
+            value={values.bufferAfter}
+            onChange={(e) => onChange({ ...values, bufferAfter: Number(e.target.value) })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            {BUFFER_OPTIONS.map((m) => (
+              <option key={m} value={m}>{m === 0 ? "なし" : `${m}分`}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <p className="text-xs text-gray-500 -mt-3">
+        会議前後に確保する準備・移動時間です
+      </p>
 
       {/* Per-weekday schedule */}
       <div>

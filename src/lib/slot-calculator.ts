@@ -61,6 +61,8 @@ export function calculateAvailableSlots(params: {
   timezone: string;
   existingBookings: BusyPeriod[];
   weeklySchedule?: DaySchedule[] | null;
+  bufferBefore?: number;
+  bufferAfter?: number;
 }): TimeSlot[] {
   const {
     icsData,
@@ -72,9 +74,20 @@ export function calculateAvailableSlots(params: {
     timezone,
     existingBookings,
     weeklySchedule,
+    bufferBefore = 0,
+    bufferAfter = 0,
   } = params;
 
-  const busyPeriods = [...parseBusyPeriods(icsData), ...existingBookings];
+  const bufferBeforeMs = bufferBefore * 60 * 1000;
+  const bufferAfterMs = bufferAfter * 60 * 1000;
+
+  // Expand existing bookings by buffer on both sides
+  const bufferedBookings: BusyPeriod[] = existingBookings.map((b) => ({
+    start: new Date(b.start.getTime() - bufferBeforeMs),
+    end: new Date(b.end.getTime() + bufferAfterMs),
+  }));
+
+  const busyPeriods = [...parseBusyPeriods(icsData), ...bufferedBookings];
   const slots: TimeSlot[] = [];
   const durationMs = durationMinutes * 60 * 1000;
 
