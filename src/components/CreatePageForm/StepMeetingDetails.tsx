@@ -8,6 +8,7 @@ type MeetingDetails = {
   durationMinutes: number;
   meetingUrl: string;
   timezone: string;
+  slug: string;
 };
 
 type Props = {
@@ -123,6 +124,29 @@ export default function StepMeetingDetails({ values, onChange }: Props) {
             className={inputClass}
           />
           <p className="text-xs text-gray-600 mt-1">Zoom、Google Meet などのURLを入力するとインビテーションメールに含まれます</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-800 mb-1">
+            カスタムURL（任意）
+          </label>
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-gray-400 whitespace-nowrap">your-domain.com/</span>
+            <input
+              type="text"
+              value={values.slug}
+              onChange={(e) => {
+                const v = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+                onChange({ ...values, slug: v });
+              }}
+              placeholder="yamada-taro"
+              maxLength={50}
+              className={inputClass}
+            />
+          </div>
+          <p className="text-xs text-gray-600 mt-1">
+            英小文字・数字・ハイフンのみ（3〜50文字）。空白の場合はランダムIDが割り当てられます。
+          </p>
         </div>
       </div>
     </div>

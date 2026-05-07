@@ -29,6 +29,7 @@ export type CreatePageInput = {
   workingHoursStart: number;
   workingHoursEnd: number;
   timezone: string;
+  slug?: string;
 };
 
 export type CreateBookingInput = {

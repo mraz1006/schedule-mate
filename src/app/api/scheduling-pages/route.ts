@@ -19,10 +19,26 @@ export async function POST(req: NextRequest) {
       workingHoursStart,
       workingHoursEnd,
       timezone,
+      slug,
     } = body;
 
     if (!title || !organizerName || !organizerEmail || !icsUrl || !availableFrom || !availableTo) {
       return NextResponse.json({ error: "必須項目が不足しています" }, { status: 400 });
+    }
+
+    // Validate slug if provided
+    const cleanSlug = slug?.trim() || null;
+    if (cleanSlug) {
+      if (!/^[a-z0-9-]{3,50}$/.test(cleanSlug)) {
+        return NextResponse.json(
+          { error: "URLスラグは英小文字・数字・ハイフンのみ、3〜50文字で入力してください" },
+          { status: 400 }
+        );
+      }
+      const existing = await prisma.schedulingPage.findUnique({ where: { slug: cleanSlug } });
+      if (existing) {
+        return NextResponse.json({ error: "そのURLはすでに使用されています" }, { status: 409 });
+      }
     }
 
     // Validate ICS URL by fetching it
@@ -52,6 +68,7 @@ export async function POST(req: NextRequest) {
         workingHoursStart,
         workingHoursEnd,
         timezone,
+        slug: cleanSlug,
       },
     });
 

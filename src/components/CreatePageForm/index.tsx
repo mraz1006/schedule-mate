@@ -23,6 +23,7 @@ export default function CreatePageForm() {
     durationMinutes: 30,
     meetingUrl: "",
     timezone: "Asia/Tokyo",
+    slug: "",
   });
   const [availability, setAvailability] = useState({
     availableFrom: "",

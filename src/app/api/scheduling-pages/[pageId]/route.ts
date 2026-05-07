@@ -9,8 +9,8 @@ export async function GET(
   try {
     const { pageId } = await params;
 
-    const page = await prisma.schedulingPage.findUnique({
-      where: { id: pageId },
+    const page = await prisma.schedulingPage.findFirst({
+      where: { OR: [{ id: pageId }, { slug: pageId }] },
       include: {
         bookings: {
           where: { status: "CONFIRMED" },
