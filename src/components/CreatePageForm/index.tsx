@@ -30,6 +30,8 @@ export default function CreatePageForm() {
     workingHoursStart: 9,
     workingHoursEnd: 18,
     weeklySchedule: DEFAULT_WEEKLY_SCHEDULE,
+    bufferBefore: 0,
+    bufferAfter: 0,
   });
 
   const canProceed = () => {
