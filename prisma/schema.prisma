@@ -22,6 +22,8 @@ model SchedulingPage {
   workingHoursEnd   Int       @default(18)
   timezone          String    @default("Asia/Tokyo")
   manageToken       String    @unique @default(cuid())
+  icsCache          String?
+  icsCacheUpdatedAt DateTime?
   createdAt         DateTime  @default(now())
   bookings          Booking[]
 }
