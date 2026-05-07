@@ -77,7 +77,15 @@ export default function BookingPage({ pageData }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "予約に失敗しました");
-      router.push(`/${pageData.id}/booked`);
+      const params = new URLSearchParams({
+        title: pageData.title,
+        organizer: pageData.organizerName,
+        start: selectedSlot.start.toISOString(),
+        end: selectedSlot.end.toISOString(),
+        tz: pageData.timezone,
+        ...(pageData.meetingUrl ? { meetingUrl: pageData.meetingUrl } : {}),
+      });
+      router.push(`/${pageData.id}/booked?${params.toString()}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "エラーが発生しました");
     } finally {
