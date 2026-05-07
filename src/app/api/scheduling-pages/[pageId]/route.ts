@@ -48,6 +48,7 @@ export async function GET(
         start: b.startTime,
         end: b.endTime,
       })),
+      weeklySchedule: page.weeklySchedule as import("@/lib/slot-calculator").DaySchedule[] | null,
     });
 
     return NextResponse.json({

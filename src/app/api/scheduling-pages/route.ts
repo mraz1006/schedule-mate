@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CreatePageInput } from "@/types";
 
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
       workingHoursStart,
       workingHoursEnd,
       timezone,
+      weeklySchedule,
     } = body;
 
     if (!title || !organizerName || !organizerEmail || !icsUrl || !availableFrom || !availableTo) {
@@ -52,6 +54,9 @@ export async function POST(req: NextRequest) {
         workingHoursStart,
         workingHoursEnd,
         timezone,
+        weeklySchedule: weeklySchedule !== undefined
+          ? (weeklySchedule as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
       },
     });
 
