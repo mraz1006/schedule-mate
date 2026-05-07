@@ -14,6 +14,36 @@ function formatDateTime(date: Date, timezone: string): string {
   }).format(date);
 }
 
+export async function sendCancellationEmail(params: {
+  title: string;
+  organizerName: string;
+  attendeeName: string;
+  attendeeEmail: string;
+  startTime: Date;
+  timezone: string;
+}) {
+  const { title, organizerName, attendeeName, attendeeEmail, startTime, timezone } = params;
+  const formattedStart = formatDateTime(startTime, timezone);
+
+  await resend.emails.send({
+    from: "Schedule Mate <noreply@schedule-mate.com>",
+    to: [attendeeEmail],
+    subject: `【予約キャンセル】${title} - ${formattedStart}`,
+    html: `
+<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+  <h2 style="color: #1a1a1a;">予約がキャンセルされました</h2>
+  <p>${attendeeName} さん、</p>
+  <p>${organizerName} さんとのミーティングがキャンセルされました。</p>
+  <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
+    <p style="margin: 4px 0;"><strong>件名:</strong> ${title}</p>
+    <p style="margin: 4px 0;"><strong>日時:</strong> ${formattedStart}</p>
+  </div>
+  <p style="color: #666; font-size: 12px;">このメールはSchedule Mateから自動送信されています。</p>
+</div>
+    `.trim(),
+  });
+}
+
 export async function sendBookingEmails(params: {
   title: string;
   organizerName: string;
