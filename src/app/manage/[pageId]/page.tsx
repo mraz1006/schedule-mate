@@ -36,7 +36,7 @@ export default async function ManagePage({ params, searchParams }: Props) {
   if (!token || token !== page.manageToken) redirect(`/${pageId}`);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const publicUrl = `${baseUrl}/${pageId}`;
+  const publicUrl = `${baseUrl}/${page.slug ?? pageId}`;
 
   return (
     <div className="min-h-screen py-12 px-4">
