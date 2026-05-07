@@ -74,6 +74,8 @@ export async function POST(req: NextRequest) {
         meetingUrl: page.meetingUrl,
         timezone: page.timezone,
         icsContent,
+        bookingId: booking.id,
+        cancelToken: booking.cancelToken,
       });
     } catch (emailError) {
       console.error("Email sending failed (booking still created):", emailError);

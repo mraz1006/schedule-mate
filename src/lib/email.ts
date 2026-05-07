@@ -25,6 +25,8 @@ export async function sendBookingEmails(params: {
   meetingUrl: string | null;
   timezone: string;
   icsContent: string;
+  bookingId: string;
+  cancelToken: string;
 }) {
   const {
     title,
@@ -37,14 +39,19 @@ export async function sendBookingEmails(params: {
     meetingUrl,
     timezone,
     icsContent,
+    bookingId,
+    cancelToken,
   } = params;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  const cancelUrl = `${baseUrl}/bookings/${bookingId}/cancel?token=${cancelToken}`;
 
   const formattedStart = formatDateTime(startTime, timezone);
   const formattedEnd = formatDateTime(endTime, timezone);
 
   const icsBase64 = Buffer.from(icsContent).toString("base64");
 
-  const emailBody = (recipientName: string) => `
+  const emailBody = (recipientName: string, isAttendee: boolean) => `
 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
   <h2 style="color: #1a1a1a;">ミーティングが確定しました</h2>
   <p>${recipientName} さん、</p>
@@ -58,6 +65,7 @@ export async function sendBookingEmails(params: {
   </div>
 
   <p>添付のカレンダーファイル(.ics)を開いて、カレンダーに追加してください。</p>
+  ${isAttendee ? `<p style="margin-top: 16px; font-size: 13px;"><a href="${cancelUrl}" style="color: #666;">予約をキャンセルする場合はこちら</a></p>` : ""}
   <p style="color: #666; font-size: 12px;">このメールはSchedule Mateから自動送信されています。</p>
 </div>
   `.trim();
@@ -76,14 +84,14 @@ export async function sendBookingEmails(params: {
       from: "Schedule Mate <noreply@schedule-mate.com>",
       to: [organizerEmail],
       subject: `【予約確定】${title} - ${formattedStart}`,
-      html: emailBody(organizerName),
+      html: emailBody(organizerName, false),
       attachments,
     }),
     resend.emails.send({
       from: "Schedule Mate <noreply@schedule-mate.com>",
       to: [attendeeEmail],
       subject: `【予約確定】${title} - ${formattedStart}`,
-      html: emailBody(attendeeName),
+      html: emailBody(attendeeName, true),
       attachments,
     }),
   ]);

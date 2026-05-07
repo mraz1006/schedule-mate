@@ -35,6 +35,7 @@ model Booking {
   startTime        DateTime
   endTime          DateTime
   status           BookingStatus  @default(CONFIRMED)
+  cancelToken      String         @unique @default(cuid())
   createdAt        DateTime       @default(now())
 }
 
