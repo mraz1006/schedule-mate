@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import CancelBookingButton from "./CancelBookingButton";
 
 type Props = {
   params: Promise<{ pageId: string }>;
@@ -141,15 +142,24 @@ export default async function ManagePage({ params, searchParams }: Props) {
                         }).format(booking.endTime)}
                       </p>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        booking.status === "CONFIRMED"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {booking.status === "CONFIRMED" ? "確定" : "キャンセル"}
-                    </span>
+                    <div className="flex flex-col items-end gap-2">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          booking.status === "CONFIRMED"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-500"
+                        }`}
+                      >
+                        {booking.status === "CONFIRMED" ? "確定" : "キャンセル"}
+                      </span>
+                      {booking.status === "CONFIRMED" && (
+                        <CancelBookingButton
+                          pageId={pageId}
+                          bookingId={booking.id}
+                          manageToken={token}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
